@@ -1,0 +1,18 @@
+import pandas as pd
+
+# represent transactions in list form
+dataset = pd.read_csv("Market_Basket_Optimisation.csv", header=None)
+transactions=[]
+for i in range(0,7501):
+    transactions.append([str(dataset.values[i,j]) for j in range(0,20)])
+    
+#training apriori on dataset
+    #consider product purchased atleast 3 times a day therefore SUPPORT for week 3*7/7500=0.0028
+    #confidence default 0.8 but this gives values most purchased but not necessirily associative, therefore use less confidence
+from apyori import apriori
+rules=apriori(transactions, min_support=0.003,min_confidence=0.2,min_lift=3,min_length= 2)
+    
+#Display rules
+results = list(rules)
+
+

@@ -1,0 +1,70 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+dataset= pd.read_csv('Position_Salaries.csv')
+
+x= dataset.iloc[:,1:2].values
+y=dataset.iloc[:,2:].values
+
+#fitting linear regression to dataset: to compare polynomial with reference base linear model
+from sklearn.linear_model import LinearRegression
+lin_reg = LinearRegression().fit(x,y) 
+
+#fitting polynomial regression to dataset
+# automatically includes column of constants..1,2,3 first row hence total 3 rows as below in dataset
+from sklearn.preprocessing import PolynomialFeatures
+poly_reg = PolynomialFeatures(degree = 2)
+x_poly= poly_reg.fit_transform(x)
+#fit to multiple linear regression
+lin_reg2=LinearRegression().fit(x_poly,y)
+
+#visualize linear
+#real points
+plt.scatter(x,y, color='red')
+#predict
+plt.plot(x, lin_reg.predict(x), color='blue')
+plt.title('Truth or bluff-linear')
+plt.xlabel('position level')
+plt.ylabel('salary')
+plt.show()
+
+#visualize polynomial: any shape except straight line
+#second line below: not used x_poly, instead used poly_reg.fit_transform(x) to generalize the code, since x_poly was already fittied to some data above
+plt.scatter(x,y, color='red')
+plt.plot(x, lin_reg2.predict(poly_reg.fit_transform(x)))
+plt.title('Truth or bluff-polynomial')
+plt.xlabel('position level')
+plt.ylabel('salary')
+plt.show()
+
+
+# change degree to get more accuracy
+
+from sklearn.preprocessing import PolynomialFeatures
+poly_reg = PolynomialFeatures(degree = 4)
+x_poly= poly_reg.fit_transform(x)
+#fit to multiple linear regression
+lin_reg2=LinearRegression().fit(x_poly,y)
+
+plt.scatter(x,y, color='red')
+plt.plot(x, lin_reg2.predict(poly_reg.fit_transform(x)))
+plt.title('Truth or bluff-polynomial')
+plt.xlabel('position level')
+plt.ylabel('salary')
+plt.show()
+
+
+#predict linear
+lin_reg.predict(x)
+# for specific
+lin_reg.predict(6.5)
+#Expected 2D array, got scalar array instead:, so modified as below:
+lin_reg.predict([[6.5]])
+
+# predict polynomial
+lin_reg2.predict(poly_reg.fit_transform([[6.5]]))
+
+
+
+
